@@ -1,0 +1,16 @@
+.vscode/*
+**/.DS_Store
+**/.ipynb_checkpoints
+**/__pycache__
+*.pkl
+datasets/raw_ground_truth/
+
+# may be cleaned
+# **/*.p
+# **/*.pkl
+# **/*.png
+# **/*.pt
+# **/record*.txt
+# **/*.zip
+# **/*.mov
+# **/events*
