@@ -11,6 +11,8 @@ from std_msgs.msg import String
 
 from hand_gesture_classifier.msg import HandJointPos
 
+from scipy.stats import mode
+
 
 class RockPaperScissorsClassifier:
     def __init__(self, model_filename='lr_rock_paper_scissors.pkl'):
@@ -35,7 +37,9 @@ class RockPaperScissorsClassifier:
         self.pub = rospy.Publisher('hand_gesture', String, queue_size=10)
         # **************************************
         # *** Feel free to add anything here ***
-        pass
+        # pass
+        self.label_mapping = {'rock': 0, 'paper': 1, 'scissors': 2}
+        self.reverse_label_mapping = {v: k for k, v in label_mapping.items()}
         # **************************************
 
     def callback(self, data):
@@ -55,7 +59,19 @@ class RockPaperScissorsClassifier:
         """
         # *************************************
         # ********** To Be Done Here **********
-        pass
+        features = self.process_features(data)
+    
+        predicted_labels_encoded = self.model.predict(features)
+        result = mode(predicted_labels_encoded)
+        
+        if np.isscalar(result.mode):
+            most_common_label_encoded = result.mode
+        else:
+            most_common_label_encoded = mode(predicted_labels_encoded).mode[0]
+  
+        hand_gesture = self.reverse_label_mapping[most_common_label_encoded]
+        
+        self.pub.publish(hand_gesture)
         # *************************************
         
 
@@ -76,7 +92,16 @@ class RockPaperScissorsClassifier:
         """
         # *************************************
         # ********** To Be Done Here **********
-        X = None
+        
+        X = np.array(data.x)
+        thumb0_x = X[:, 0]
+        thumb0_y = X[:, 1]
+        thumb0_z = X[:, 2]
+        for i in range(0, X.shape[1], 3):
+            X[:, i] -= thumb0_x
+            X[:, i + 1] -= thumb0_y
+            X[:, i + 2] -= thumb0_z
+        X = X[:,3:].reshape(1, -1)
         # *************************************
         return X
         

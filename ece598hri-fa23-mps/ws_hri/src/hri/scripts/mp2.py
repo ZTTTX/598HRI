@@ -29,7 +29,14 @@ class RobotPlayer:
     def gesture_callback(self, data):
         # *****************************************
         # ************ To be done here ************
-        pass
+        cur_gesture = data
+        if cur_gesture == 'rock':
+            self.goal = self.robot_gestures['paper']
+        elif cur_gesture == 'paper':
+            self.goal = self.robot_gestures['scissors']
+        elif cur_gesture == 'scissors':
+            self.goal = self.robot_gestures['rock']
+        
         # *****************************************
             
     def position_callback(self, msg):
