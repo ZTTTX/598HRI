@@ -29,14 +29,17 @@ class RobotPlayer:
     def gesture_callback(self, data):
         # *****************************************
         # ************ To be done here ************
-        cur_gesture = data
+        cur_gesture = data.data
         if cur_gesture == 'rock':
+            print("To paper")
             self.goal = self.robot_gestures['paper']
         elif cur_gesture == 'paper':
+            print("To scissors")
             self.goal = self.robot_gestures['scissors']
         elif cur_gesture == 'scissors':
+            print("To rock")
             self.goal = self.robot_gestures['rock']
-        
+        self.move_to_goal()
         # *****************************************
             
     def position_callback(self, msg):
